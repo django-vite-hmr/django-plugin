@@ -20,6 +20,40 @@ register = template.Library()
 
 
 @register.simple_tag
+def vite_hot():
+    app_settings = get_app_settings()
+    debug = app_settings.get("DEBUG", False)
+    host = app_settings.get("HOST", "localhost")
+    port = app_settings.get("PORT", 5173)
+
+    if debug:
+        return format_html(
+            """
+        <script>
+            const socket = new WebSocket("ws://{}:{}/")
+            socket.onmessage = (event) => {{
+                console.log(event)
+                
+                if (event.data === "reload")
+                    window.location.reload()
+            }}
+            
+            socket.onerror = (error) => {{
+                console.error("WebSocket error", error)
+            }}
+            
+            socket.onclose = ()=> {{
+                console.log("WebSocket connection closed")
+            }}
+        </script>
+        """,
+            host,
+            port,
+        )
+    return
+
+
+@register.simple_tag
 def vite_asset(file: str, **attributes):
     app_settings = get_app_settings()
 
