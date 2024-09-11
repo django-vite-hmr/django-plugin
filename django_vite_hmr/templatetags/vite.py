@@ -65,7 +65,6 @@ def vite_asset(file: str, **attributes):
 
     # TODO This can return List[str] or str or None (Handle Those Cases)
     file_abs = find(file.lstrip("/"))
-    print(file_abs)
     static_url = os.path.relpath(file_abs, settings.BASE_DIR)
 
     # Generating Response Body
